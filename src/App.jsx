@@ -3,18 +3,15 @@ import Task from "./components/Task";
 import Alert from "./components/Alert";
 
 function App() {
-  const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState(
-    localStorage.getItem("tasks")
-      ? JSON.parse(localStorage.getItem("tasks"))
-      : []
-  );
+  const tasksLS = JSON.parse(localStorage.getItem("tasks"));
+
+  const [task, setTask] = useState("".trim());
+  const [tasks, setTasks] = useState(tasksLS ?? []);
   const [error, setError] = useState(false);
   const [idTask, setIdTask] = useState("");
 
   useEffect(() => {
     const getTasks = () => {
-      const tasksLS = JSON.parse(localStorage.getItem("tasks"));
       if (tasksLS) {
         setTasks(tasksLS);
       }
@@ -37,7 +34,7 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (task === "") {
+    if (task.trim() === "") {
       setError(true);
 
       setTimeout(() => {
@@ -48,7 +45,9 @@ function App() {
 
     if (idTask) {
       const updateTask = tasks.map((taskState) =>
-        taskState.id === idTask ? { content: task, id: idTask } : taskState
+        taskState.id === idTask
+          ? { content: task.trim(), id: idTask, done: false }
+          : taskState
       );
 
       setTasks(updateTask);
@@ -56,8 +55,9 @@ function App() {
       setIdTask("");
     } else {
       const taskObject = {
-        content: task,
+        content: task.trim(),
         id: generateID(),
+        done: false,
       };
 
       setTasks([...tasks, taskObject]);
@@ -70,13 +70,25 @@ function App() {
     const updateTasks = tasks.filter((task) => task.id !== id);
 
     setTasks(updateTasks);
+    setIdTask("");
+    setTask("");
   };
 
   const editTask = (task) => {
     const { content, id } = task;
 
-    setTask(content);
+    setTask(content.trim());
     setIdTask(id);
+  };
+
+  const completeTask = (id) => {
+    const updateTask = tasks.map((task) =>
+      task.id === id
+        ? { content: task.content, id: task.id, done: !task.done }
+        : task
+    );
+
+    setTasks(updateTask);
   };
 
   return (
@@ -114,8 +126,10 @@ function App() {
             <Task
               key={task.id}
               task={task}
+              idTask={idTask}
               deleteTask={deleteTask}
               editTask={editTask}
+              completeTask={completeTask}
             />
           ))}
         </div>

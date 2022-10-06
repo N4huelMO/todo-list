@@ -1,11 +1,42 @@
-import React from "react";
+import { useState } from "react";
 
-const Task = ({ task, deleteTask, editTask }) => {
-  const { content, id } = task;
+const Task = ({ task, idTask, deleteTask, editTask, completeTask }) => {
+  const { content, id, done } = task;
 
   return (
-    <div className="flex justify-between items-center mt-2 bg-white p-2 shadow-md  break-all">
-      <p>{content}</p>
+    <div
+      className={`flex justify-between items-center mt-2 ${
+        idTask === id ? "bg-green-200" : "bg-white"
+      }  p-2 shadow-md break-all h-auto`}
+    >
+      <div className="flex">
+        <button
+          className="mr-2"
+          onClick={() => {
+            completeTask(id);
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className={`w-6 h-6 inline-block ${
+              done ? "text-green-800" : "text-red-800"
+            }`} //
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </button>
+        <div>
+          <p>{content}</p>
+        </div>
+      </div>
 
       <div className="flex ml-2">
         <button
@@ -20,7 +51,7 @@ const Task = ({ task, deleteTask, editTask }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 inline-block text-sky-900"
+            className="w-6 h-6  text-sky-900"
           >
             <path
               strokeLinecap="round"
