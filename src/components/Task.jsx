@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const Task = ({ task, idTask, deleteTask, editTask, completeTask }) => {
   const { content, id, done } = task;
 
